@@ -37,7 +37,12 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       href: "/admin/categories",
       icon: ChartBarIcon,
     },
-    { name: "Gestion Achats", href: "/admin/purchases", icon: TruckIcon },
+    {
+      name: "Historique Restockages",
+      href: "/admin/restock-history",
+      icon: TruckIcon,
+    },
+
     { name: "Gestion Ventes", href: "/admin/sales", icon: CurrencyDollarIcon },
     { name: "Gestion Utilisateurs", href: "/admin/users", icon: UsersIcon },
     { name: "Rapports", href: "/admin/reports", icon: ChartBarIcon },
