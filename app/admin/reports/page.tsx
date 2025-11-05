@@ -172,7 +172,7 @@ const ReportsPage = () => {
                 onChange={(e) =>
                   setExportFormat(e.target.value as "pdf" | "excel")
                 }
-                className="border border-gray-300 rounded-md px-3 py-2"
+                className="border border-gray-300 rounded-md px-3 py-2 text-black"
               >
                 <option value="pdf">Export PDF</option>
                 <option value="excel">Export Excel</option>
@@ -201,7 +201,7 @@ const ReportsPage = () => {
                       e.target.value as "daily" | "weekly" | "monthly",
                     )
                   }
-                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                 >
                   <option value="daily">Rapport journalier</option>
                   <option value="weekly">Rapport hebdomadaire</option>
@@ -218,7 +218,7 @@ const ReportsPage = () => {
                     type="date"
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
-                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-md w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-md w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                   />
                 </div>
               </div>

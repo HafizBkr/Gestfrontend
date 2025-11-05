@@ -27,7 +27,11 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
   const navigation = [
     { name: "Tableau de bord", href: "/admin/dashboard", icon: HomeIcon },
-    { name: "Gestion Produits", href: "/admin/products", icon: ShoppingBagIcon },
+    {
+      name: "Gestion Produits",
+      href: "/admin/products",
+      icon: ShoppingBagIcon,
+    },
     { name: "Gestion Achats", href: "/admin/purchases", icon: TruckIcon },
     { name: "Gestion Ventes", href: "/admin/sales", icon: CurrencyDollarIcon },
     { name: "Gestion Utilisateurs", href: "/admin/users", icon: UsersIcon },
@@ -35,8 +39,13 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   ];
 
   const handleLogout = () => {
-    // Ici vous pouvez ajouter la logique de déconnexion
-    router.push("/admin-login-xyz");
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("admin_token");
+      localStorage.removeItem("admin_data");
+      setTimeout(() => {
+        router.replace("/admin-login-xyz");
+      }, 100);
+    }
   };
 
   return (
@@ -44,14 +53,19 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       {/* Mobile sidebar */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="fixed inset-0 bg-gray-600 bg-opacity-75" onClick={() => setSidebarOpen(false)} />
+          <div
+            className="fixed inset-0 bg-gray-600 bg-opacity-75"
+            onClick={() => setSidebarOpen(false)}
+          />
           <div className="fixed inset-y-0 left-0 flex w-full max-w-xs flex-col bg-white shadow-xl">
             <div className="flex h-16 flex-shrink-0 items-center justify-between px-6 border-b">
               <div className="flex items-center">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600">
                   <span className="text-sm font-bold text-white">G</span>
                 </div>
-                <span className="ml-2 text-xl font-bold text-gray-900">Gest Store Admin</span>
+                <span className="ml-2 text-xl font-bold text-gray-900">
+                  Gest Store Admin
+                </span>
               </div>
               <button
                 type="button"
@@ -76,7 +90,9 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                   >
                     <item.icon
                       className={`mr-3 h-6 w-6 flex-shrink-0 ${
-                        isActive ? "text-blue-500" : "text-gray-400 group-hover:text-gray-500"
+                        isActive
+                          ? "text-blue-500"
+                          : "text-gray-400 group-hover:text-gray-500"
                       }`}
                     />
                     {item.name}
@@ -105,7 +121,9 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600">
                 <span className="text-sm font-bold text-white">G</span>
               </div>
-              <span className="ml-2 text-xl font-bold text-gray-900">Gest Store Admin</span>
+              <span className="ml-2 text-xl font-bold text-gray-900">
+                Gest Store Admin
+              </span>
             </div>
           </div>
           <nav className="flex-1 space-y-1 px-4 py-6">
@@ -123,7 +141,9 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                 >
                   <item.icon
                     className={`mr-3 h-6 w-6 flex-shrink-0 ${
-                      isActive ? "text-blue-500" : "text-gray-400 group-hover:text-gray-500"
+                      isActive
+                        ? "text-blue-500"
+                        : "text-gray-400 group-hover:text-gray-500"
                     }`}
                   />
                   {item.name}
@@ -138,7 +158,9 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
                   <span className="text-sm font-medium text-gray-700">A</span>
                 </div>
                 <div className="ml-3">
-                  <p className="text-sm font-medium text-gray-900">Administrateur</p>
+                  <p className="text-sm font-medium text-gray-900">
+                    Administrateur
+                  </p>
                   <p className="text-xs text-gray-500">admin@geststore.com</p>
                 </div>
               </div>
@@ -167,15 +189,15 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
           </button>
           <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
             <div className="flex items-center">
-              <h1 className="text-lg font-semibold text-gray-900">Gest Store Admin</h1>
+              <h1 className="text-lg font-semibold text-gray-900">
+                Gest Store Admin
+              </h1>
             </div>
           </div>
         </div>
 
         {/* Page content */}
-        <main className="flex-1">
-          {children}
-        </main>
+        <main className="flex-1">{children}</main>
       </div>
     </div>
   );

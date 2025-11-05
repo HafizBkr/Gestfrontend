@@ -366,13 +366,13 @@ const UsersPage = () => {
                     placeholder="Rechercher un utilisateur..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-md w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="pl-10 pr-4 py-2 border border-gray-300 rounded-md w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                   />
                 </div>
                 <select
                   value={roleFilter}
                   onChange={(e) => setRoleFilter(e.target.value)}
-                  className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                 >
                   <option value="all">Tous les rôles</option>
                   <option value="Administrateur">Administrateur</option>
@@ -381,7 +381,7 @@ const UsersPage = () => {
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                 >
                   <option value="all">Tous les statuts</option>
                   <option value="active">Actif</option>
@@ -589,7 +589,7 @@ const UsersPage = () => {
 
         {/* Modal Ajouter/Modifier Utilisateur */}
         {showModal && (
-          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="fixed inset-0 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
             <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
               <div className="mt-3">
                 <h3 className="text-lg font-medium text-gray-900 mb-4">
@@ -613,7 +613,7 @@ const UsersPage = () => {
                             firstName: e.target.value,
                           })
                         }
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                       />
                     </div>
                     <div>
@@ -627,7 +627,7 @@ const UsersPage = () => {
                         onChange={(e) =>
                           setFormData({ ...formData, lastName: e.target.value })
                         }
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                       />
                     </div>
                   </div>
@@ -642,7 +642,7 @@ const UsersPage = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, username: e.target.value })
                       }
-                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                     />
                   </div>
                   <div>
@@ -656,7 +656,7 @@ const UsersPage = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, email: e.target.value })
                       }
-                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
@@ -675,7 +675,7 @@ const UsersPage = () => {
                               | "Caissier",
                           })
                         }
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                       >
                         <option value="Caissier">Caissier</option>
                         <option value="Administrateur">Administrateur</option>
@@ -697,7 +697,7 @@ const UsersPage = () => {
                               | "suspended",
                           })
                         }
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                       >
                         <option value="active">Actif</option>
                         <option value="inactive">Inactif</option>
@@ -721,7 +721,7 @@ const UsersPage = () => {
                               password: e.target.value,
                             })
                           }
-                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                         />
                       </div>
                       <div>
@@ -738,7 +738,7 @@ const UsersPage = () => {
                               confirmPassword: e.target.value,
                             })
                           }
-                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                         />
                       </div>
                     </>
@@ -766,7 +766,7 @@ const UsersPage = () => {
 
         {/* Modal Journal d'activité utilisateur */}
         {showLogsModal && selectedUser && (
-          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="fixed inset-0 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
             <div className="relative top-20 mx-auto p-5 border w-4/5 max-w-4xl shadow-lg rounded-md bg-white">
               <div className="mb-4">
                 <h3 className="text-lg font-medium text-gray-900">

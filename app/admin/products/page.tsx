@@ -205,13 +205,13 @@ const ProductsPage = () => {
                   placeholder="Rechercher un produit..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-md w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-md w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                 />
               </div>
               <select
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
-                className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
               >
                 <option value="all">Toutes catégories</option>
                 <option value="Boissons">Boissons</option>
@@ -220,7 +220,7 @@ const ProductsPage = () => {
               <select
                 value={stockFilter}
                 onChange={(e) => setStockFilter(e.target.value)}
-                className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
               >
                 <option value="all">Tous les stocks</option>
                 <option value="low">Stock faible</option>
@@ -346,8 +346,8 @@ const ProductsPage = () => {
 
         {/* Modal Ajouter/Modifier */}
         {showModal && (
-          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-            <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+          <div className="fixed inset-0 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
+            <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white backdrop-blur-none">
               <div className="mt-3">
                 <h3 className="text-lg font-medium text-gray-900 mb-4">
                   {editingProduct
@@ -366,7 +366,7 @@ const ProductsPage = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, name: e.target.value })
                       }
-                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                     />
                   </div>
                   <div>
@@ -382,7 +382,7 @@ const ProductsPage = () => {
                           category: e.target.value as "Boissons" | "Nourriture",
                         })
                       }
-                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                     >
                       <option value="Boissons">Boissons</option>
                       <option value="Nourriture">Nourriture</option>
@@ -404,7 +404,7 @@ const ProductsPage = () => {
                             purchasePrice: e.target.value,
                           })
                         }
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                       />
                     </div>
                     <div>
@@ -422,7 +422,7 @@ const ProductsPage = () => {
                             sellPrice: e.target.value,
                           })
                         }
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                       />
                     </div>
                   </div>

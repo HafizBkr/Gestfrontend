@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import AdminLayout from "../../../components/admin/AdminLayout";
 import {
   ShoppingBagIcon,
@@ -65,6 +66,28 @@ const StatCard: React.FC<StatCardProps> = ({
 
 const AdminDashboard = () => {
   const [timeFilter, setTimeFilter] = useState("today");
+  const [checkingAuth, setCheckingAuth] = useState(true);
+  const router = useRouter();
+
+  // Contrôle d'accès - vérifier la présence du token admin
+  useEffect(() => {
+    let isMounted = true;
+    const checkAuth = async () => {
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("admin_token")
+          : null;
+      if (!token) {
+        router.replace("/admin-login-xyz");
+      } else {
+        if (isMounted) setCheckingAuth(false);
+      }
+    };
+    checkAuth();
+    return () => {
+      isMounted = false;
+    };
+  }, [router]);
 
   // Données simulées - à remplacer par des appels API
   const stats: {
@@ -121,6 +144,19 @@ const AdminDashboard = () => {
     { name: "Sandwich Jambon", sales: 32, revenue: 192 },
     { name: "Café", sales: 28, revenue: 84 },
   ];
+
+  if (checkingAuth) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="w-12 h-12 mx-auto mb-4 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+          <p className="text-lg text-gray-700">
+            Vérification de l&apos;accès...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <AdminLayout>

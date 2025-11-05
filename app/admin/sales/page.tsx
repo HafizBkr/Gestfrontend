@@ -419,13 +419,13 @@ const SalesPage = () => {
                   placeholder="Rechercher une vente..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-md w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-md w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                 />
               </div>
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
               >
                 <option value="all">Tous les statuts</option>
                 <option value="completed">Terminée</option>
@@ -435,7 +435,7 @@ const SalesPage = () => {
               <select
                 value={cashierFilter}
                 onChange={(e) => setCashierFilter(e.target.value)}
-                className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
               >
                 <option value="all">Tous les caissiers</option>
                 {cashiers.map((cashier) => (
@@ -447,7 +447,7 @@ const SalesPage = () => {
               <select
                 value={dateFilter}
                 onChange={(e) => setDateFilter(e.target.value)}
-                className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
               >
                 <option value="all">Toutes les dates</option>
                 <option value="today">Aujourd&apos;hui</option>
@@ -604,7 +604,7 @@ const SalesPage = () => {
 
         {/* Modal Ajouter/Modifier Vente */}
         {showModal && (
-          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="fixed inset-0 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
             <div className="relative top-20 mx-auto p-5 border w-4/5 max-w-4xl shadow-lg rounded-md bg-white">
               <div className="mt-3">
                 <h3 className="text-lg font-medium text-gray-900 mb-4">
@@ -622,7 +622,7 @@ const SalesPage = () => {
                         onChange={(e) =>
                           setFormData({ ...formData, cashier: e.target.value })
                         }
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                       >
                         <option value="">Sélectionner un caissier</option>
                         {cashiers.map((cashier) => (
@@ -642,8 +642,7 @@ const SalesPage = () => {
                         onChange={(e) =>
                           setFormData({ ...formData, customer: e.target.value })
                         }
-                        placeholder="Client anonyme"
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                       />
                     </div>
                     <div>
@@ -662,7 +661,7 @@ const SalesPage = () => {
                               | "check",
                           })
                         }
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                       >
                         <option value="cash">Espèces</option>
                         <option value="card">Carte</option>
@@ -685,7 +684,7 @@ const SalesPage = () => {
                               | "refunded",
                           })
                         }
-                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                       >
                         <option value="completed">Terminée</option>
                         <option value="cancelled">Annulée</option>
@@ -727,7 +726,7 @@ const SalesPage = () => {
                                   parseInt(e.target.value),
                                 )
                               }
-                              className="border border-gray-300 rounded px-2 py-1 text-sm"
+                              className="border border-gray-300 rounded px-2 py-1 text-sm text-black"
                             >
                               <option value={0}>Sélectionner produit</option>
                               {availableProducts.map((product) => (
@@ -749,7 +748,7 @@ const SalesPage = () => {
                                   parseInt(e.target.value) || 1,
                                 )
                               }
-                              className="border border-gray-300 rounded px-2 py-1 text-sm"
+                              className="border border-gray-300 rounded px-2 py-1 text-sm text-black"
                             />
                             <span className="text-sm font-medium">
                               {product
@@ -802,7 +801,7 @@ const SalesPage = () => {
                       onChange={(e) =>
                         setFormData({ ...formData, notes: e.target.value })
                       }
-                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
                       rows={2}
                     />
                   </div>
@@ -830,7 +829,7 @@ const SalesPage = () => {
 
         {/* Modal Reçu */}
         {showReceiptModal && selectedSale && (
-          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="fixed inset-0 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
             <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
               <div className="mb-4">
                 <h3 className="text-lg font-medium text-gray-900 text-center">

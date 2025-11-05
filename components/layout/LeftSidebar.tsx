@@ -15,6 +15,15 @@ const LeftSidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
 
+  // Fonction de déconnexion
+  const handleLogout = () => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("admin_token");
+      localStorage.removeItem("admin_data");
+    }
+    router.replace("/admin-login-xyz");
+  };
+
   const { isLeftSidebarOpen, toggleLeftSidebar } = useSidebar();
 
   return (
@@ -118,14 +127,14 @@ const LeftSidebar = () => {
         {/* User Section */}
         <div className="p-4 border-t">
           <button
-            onClick={() => router.push("/login")}
+            onClick={handleLogout}
             className="w-full flex items-center p-3 text-gray-700 hover:bg-gray-100 rounded-lg"
           >
             <span>🚪</span>
             <span
               className={`ml-3 font-medium whitespace-nowrap transition-opacity duration-300 ${isLeftSidebarOpen ? "opacity-100" : "opacity-0"}`}
             >
-              Logout
+              Déconnexion
             </span>
           </button>
         </div>

@@ -5,14 +5,17 @@ import Input from "@/components/ui/form/Input";
 import PasswordInput from "@/components/ui/form/PasswordInput";
 import Button from "@/components/ui/form/Button";
 import Image from "next/image";
+import useAdminLogin from "../hooks/useAdminLogin";
+import { useRouter } from "next/navigation";
 
 const AdminLoginPage = () => {
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
     password: "",
   });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const { login, loading, error, admin, token } = useAdminLogin();
+  const [localError, setLocalError] = useState("");
+  const router = useRouter();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -20,29 +23,24 @@ const AdminLoginPage = () => {
       ...prev,
       [name]: value,
     }));
-    if (error) setError("");
+    if (localError) setLocalError("");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
-
-    try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      // Replace with real API call
-      if (formData.username === "admin" && formData.password === "adminpass") {
-        window.location.href = "/admin/dashboard";
-      } else {
-        setError("Identifiants incorrects.");
-      }
-    } catch {
-      setError("Erreur serveur.");
-    } finally {
-      setLoading(false);
-    }
+    setLocalError("");
+    await login(formData.email, formData.password);
   };
+
+  // Utiliser useEffect pour gérer la redirection après login réussi
+  React.useEffect(() => {
+    if (token && admin) {
+      router.replace("/admin/dashboard");
+    }
+    if (error) {
+      setLocalError(error);
+    }
+  }, [token, admin, error, router]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center p-4">
@@ -85,11 +83,11 @@ const AdminLoginPage = () => {
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <Input
-                  name="username"
+                  name="email"
                   type="text"
-                  label="Nom d'utilisateur ou Email"
-                  placeholder="Nom d'utilisateur ou adresse email"
-                  value={formData.username}
+                  label="Adresse email"
+                  placeholder="Adresse email"
+                  value={formData.email}
                   onChange={handleInputChange}
                   required
                   size="lg"
@@ -142,7 +140,7 @@ const AdminLoginPage = () => {
                   }
                 />
 
-                {error && (
+                {(localError || error) && (
                   <div className="bg-red-50 border border-red-200 rounded-md p-3">
                     <div className="flex">
                       <svg
@@ -158,7 +156,9 @@ const AdminLoginPage = () => {
                           d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                         />
                       </svg>
-                      <p className="text-sm text-red-700">{error}</p>
+                      <p className="text-sm text-red-700">
+                        {localError || error}
+                      </p>
                     </div>
                   </div>
                 )}
