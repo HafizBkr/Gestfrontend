@@ -29,7 +29,10 @@ const categories = [
 
 const ProductGrid = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const { addToCart, setRefreshProducts } = useCart();
+  const [productQuantities, setProductQuantities] = useState<{
+    [key: string]: number;
+  }>({});
+  const { addToCart, setRefreshProducts, cartItems } = useCart();
 
   // Récupérer le token du caissier
   const token =
@@ -43,14 +46,52 @@ const ProductGrid = () => {
     setRefreshProducts(refetch);
   }, [refetch, setRefreshProducts]);
 
+  const handleQuantityChange = (productId: string, quantity: number) => {
+    setProductQuantities((prev) => ({
+      ...prev,
+      [productId]: quantity,
+    }));
+  };
+
+  const getSelectedQuantity = (productId: string) => {
+    return productQuantities[productId] || 1;
+  };
+
+  const getCartQuantity = (productId: string) => {
+    const cartItem = cartItems.find((item) => item.product_id === productId);
+    return cartItem ? cartItem.quantity : 0;
+  };
+
+  const getAvailableStock = (productId: string, totalStock: number) => {
+    return totalStock - getCartQuantity(productId);
+  };
+
   const handleAddToCart = (product: Product) => {
-    if (product.quantity > 0 && product.is_active) {
-      addToCart({
-        product_id: product.product_id,
-        name: product.name,
-        sale_price: product.sale_price,
-        quantity: product.quantity,
-      });
+    const selectedQuantity = getSelectedQuantity(product.product_id);
+    const availableStock = getAvailableStock(
+      product.product_id,
+      product.quantity,
+    );
+    if (
+      product.quantity > 0 &&
+      product.is_active &&
+      selectedQuantity <= availableStock
+    ) {
+      // Ajouter la quantité sélectionnée en une seule fois
+      addToCart(
+        {
+          product_id: product.product_id,
+          name: product.name,
+          sale_price: product.sale_price,
+          quantity: product.quantity,
+        },
+        selectedQuantity,
+      );
+      // Réinitialiser la quantité sélectionnée après ajout
+      setProductQuantities((prev) => ({
+        ...prev,
+        [product.product_id]: 1,
+      }));
     }
   };
 
@@ -121,35 +162,139 @@ const ProductGrid = () => {
               </div>
             </div>
             <div className="p-4">
-              <h3 className="font-semibold text-gray-800">{product.name}</h3>
-              <p className="text-gray-500 text-sm">Stock: {product.quantity}</p>
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="font-semibold text-gray-800">{product.name}</h3>
+                {getCartQuantity(product.product_id) > 0 && (
+                  <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded-full">
+                    {getCartQuantity(product.product_id)} dans le panier
+                  </span>
+                )}
+              </div>
+              <p className="text-gray-500 text-sm">
+                Stock: {product.quantity}
+                {getCartQuantity(product.product_id) > 0 && (
+                  <span className="text-orange-600">
+                    {" "}
+                    (Disponible:{" "}
+                    {getAvailableStock(product.product_id, product.quantity)})
+                  </span>
+                )}
+              </p>
               <div className="flex justify-between items-center mt-4">
                 <span className="text-lg font-bold text-gray-900">
                   {parseFloat(product.sale_price).toFixed(0)} FCFA
                 </span>
+              </div>
+
+              {/* Sélecteur de quantité et bouton d'ajout */}
+              <div className="flex items-center justify-between mt-3 gap-2">
+                <div
+                  className={`flex items-center border rounded-lg ${
+                    getAvailableStock(product.product_id, product.quantity) <= 0
+                      ? "opacity-50"
+                      : ""
+                  }`}
+                >
+                  <button
+                    onClick={() =>
+                      handleQuantityChange(
+                        product.product_id,
+                        Math.max(
+                          1,
+                          getSelectedQuantity(product.product_id) - 1,
+                        ),
+                      )
+                    }
+                    className="px-2 py-1 text-gray-600 hover:bg-gray-100 rounded-l-lg disabled:opacity-50"
+                    disabled={
+                      getSelectedQuantity(product.product_id) <= 1 ||
+                      getAvailableStock(product.product_id, product.quantity) <=
+                        0
+                    }
+                  >
+                    -
+                  </button>
+                  <input
+                    type="number"
+                    min="1"
+                    max={Math.max(
+                      1,
+                      getAvailableStock(product.product_id, product.quantity),
+                    )}
+                    value={getSelectedQuantity(product.product_id)}
+                    onChange={(e) =>
+                      handleQuantityChange(
+                        product.product_id,
+                        Math.min(
+                          Math.max(
+                            1,
+                            getAvailableStock(
+                              product.product_id,
+                              product.quantity,
+                            ),
+                          ),
+                          Math.max(1, parseInt(e.target.value) || 1),
+                        ),
+                      )
+                    }
+                    className="w-12 text-center py-1 border-0 text-sm text-black"
+                    disabled={
+                      getAvailableStock(product.product_id, product.quantity) <=
+                      0
+                    }
+                  />
+                  <button
+                    onClick={() =>
+                      handleQuantityChange(
+                        product.product_id,
+                        Math.min(
+                          getAvailableStock(
+                            product.product_id,
+                            product.quantity,
+                          ),
+                          getSelectedQuantity(product.product_id) + 1,
+                        ),
+                      )
+                    }
+                    className="px-2 py-1 text-gray-600 hover:bg-gray-100 rounded-r-lg disabled:opacity-50"
+                    disabled={
+                      getSelectedQuantity(product.product_id) >=
+                        getAvailableStock(
+                          product.product_id,
+                          product.quantity,
+                        ) ||
+                      getAvailableStock(product.product_id, product.quantity) <=
+                        0
+                    }
+                  >
+                    +
+                  </button>
+                </div>
+
                 <button
                   onClick={() => handleAddToCart(product)}
-                  className={`p-2 rounded-full transition-colors ${
-                    product.quantity === 0 || !product.is_active
-                      ? "bg-gray-400 cursor-not-allowed"
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    product.quantity === 0 ||
+                    !product.is_active ||
+                    getSelectedQuantity(product.product_id) >
+                      getAvailableStock(product.product_id, product.quantity) ||
+                    getAvailableStock(product.product_id, product.quantity) <= 0
+                      ? "bg-gray-400 cursor-not-allowed text-white"
                       : "bg-blue-600 hover:bg-blue-700 text-white"
                   }`}
-                  aria-label="Add to cart"
-                  disabled={product.quantity === 0 || !product.is_active}
+                  disabled={
+                    product.quantity === 0 ||
+                    !product.is_active ||
+                    getSelectedQuantity(product.product_id) >
+                      getAvailableStock(product.product_id, product.quantity) ||
+                    getAvailableStock(product.product_id, product.quantity) <= 0
+                  }
                 >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                    />
-                  </svg>
+                  {getAvailableStock(product.product_id, product.quantity) <= 0
+                    ? "Épuisé"
+                    : product.quantity === 0 || !product.is_active
+                      ? "Indisponible"
+                      : "Ajouter"}
                 </button>
               </div>
             </div>

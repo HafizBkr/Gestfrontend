@@ -58,12 +58,12 @@ const RightSidebar = () => {
       <div className="p-4 border-b">
         <div className="flex justify-between items-center mb-2">
           <h2
-            className={`font-semibold text-lg ${!isRightSidebarOpen && "hidden"}`}
+            className={`font-semibold text-lg text-black ${!isRightSidebarOpen && "hidden"}`}
           >
             Table 5
           </h2>
           {isRightSidebarOpen ? (
-            <button className="text-blue-600 text-sm hover:text-blue-700">
+            <button className="text-black text-sm hover:text-gray-700">
               Download Receipt
             </button>
           ) : (
@@ -76,7 +76,7 @@ const RightSidebar = () => {
           )}
         </div>
         <div
-          className={`flex space-x-2 text-sm text-gray-600 ${!isRightSidebarOpen && "hidden"}`}
+          className={`flex space-x-2 text-sm text-black ${!isRightSidebarOpen && "hidden"}`}
         >
           <span>Order #123</span>
           <span>•</span>
@@ -98,7 +98,7 @@ const RightSidebar = () => {
       >
         <div className="space-y-4">
           {cartItems.length === 0 ? (
-            <div className="text-gray-500 text-center py-8">
+            <div className="text-black text-center py-8">
               Aucun article dans le panier
             </div>
           ) : (
@@ -108,22 +108,22 @@ const RightSidebar = () => {
                 className="flex justify-between items-center bg-gray-50 p-3 rounded-lg"
               >
                 <div>
-                  <h3 className="font-medium text-gray-800">{item.name}</h3>
-                  <span className="text-gray-600">
+                  <h3 className="font-medium text-black">{item.name}</h3>
+                  <span className="text-black">
                     {item.price.toFixed(0)} FCFA
                   </span>
-                  <div className="text-xs text-gray-500">
-                    Stock: {item.stock}
-                  </div>
+                  <div className="text-xs text-black">Stock: {item.stock}</div>
                 </div>
                 <div className="flex items-center space-x-3">
                   <button
                     onClick={() => updateQuantity(item.product_id, -1)}
-                    className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 hover:bg-gray-300"
+                    className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-black hover:bg-gray-300"
                   >
                     -
                   </button>
-                  <span className="w-5 text-center">{item.quantity}</span>
+                  <span className="w-5 text-center text-black">
+                    {item.quantity}
+                  </span>
                   <button
                     onClick={() => updateQuantity(item.product_id, 1)}
                     className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white hover:bg-blue-700"

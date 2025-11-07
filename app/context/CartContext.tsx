@@ -29,12 +29,15 @@ interface ReceiptData {
 
 interface CartContextType {
   cartItems: CartItem[];
-  addToCart: (product: {
-    product_id: string;
-    name: string;
-    sale_price: string;
-    quantity: number;
-  }) => void;
+  addToCart: (
+    product: {
+      product_id: string;
+      name: string;
+      sale_price: string;
+      quantity: number;
+    },
+    quantityToAdd?: number,
+  ) => void;
   updateQuantity: (product_id: string, change: number) => void;
   removeFromCart: (product_id: string) => void;
   clearCart: () => void;
@@ -65,12 +68,15 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     (() => void) | null
   >(null);
 
-  const addToCart = (product: {
-    product_id: string;
-    name: string;
-    sale_price: string;
-    quantity: number;
-  }) => {
+  const addToCart = (
+    product: {
+      product_id: string;
+      name: string;
+      sale_price: string;
+      quantity: number;
+    },
+    quantityToAdd: number = 1,
+  ) => {
     const price = parseFloat(product.sale_price);
 
     setCartItems((prevItems) => {
@@ -84,7 +90,10 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
           item.product_id === product.product_id
             ? {
                 ...item,
-                quantity: Math.min(item.quantity + 1, product.quantity), // Ne pas dépasser le stock
+                quantity: Math.min(
+                  item.quantity + quantityToAdd,
+                  product.quantity,
+                ), // Ne pas dépasser le stock
               }
             : item,
         );
@@ -96,7 +105,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
             product_id: product.product_id,
             name: product.name,
             price: price,
-            quantity: 1,
+            quantity: Math.min(quantityToAdd, product.quantity),
             stock: product.quantity,
           },
         ];
