@@ -13,12 +13,31 @@ import {
   BanknotesIcon,
 } from "@heroicons/react/24/outline";
 
-const RestockHistoryPage = () => {
+interface Product {
+  product_id: string;
+  name: string;
+  // Ajoute d'autres propriétés si besoin
+}
+
+interface RestockItem {
+  product_id: string;
+  quantity: number;
+  purchase_price?: number;
+}
+
+interface Restock {
+  restock_id: string;
+  date: string;
+  items: RestockItem[];
+  // Ajoute d'autres propriétés si besoin
+}
+
+const RestockHistoryPage: React.FC = () => {
   const { restocks, loading, error, getRestocks } = useRestock();
   const { products, getProducts } = useProducts();
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [dateFilter, setDateFilter] = useState<string>("all");
-  const [selectedRestock, setSelectedRestock] = useState<any>(null);
+  const [selectedRestock, setSelectedRestock] = useState<Restock | null>(null);
 
   // Charger les données au montage du composant
   useEffect(() => {
@@ -27,9 +46,11 @@ const RestockHistoryPage = () => {
   }, []);
 
   // Filtrage des restockages
-  const filteredRestocks = restocks.filter((restock) => {
+  const filteredRestocks = (restocks as Restock[]).filter((restock) => {
     const matchesSearch = restock.items.some((item) => {
-      const product = products.find((p) => p.product_id === item.product_id);
+      const product = (products as Product[]).find(
+        (p) => p.product_id === item.product_id,
+      );
       return product?.name.toLowerCase().includes(searchTerm.toLowerCase());
     });
 
@@ -48,16 +69,18 @@ const RestockHistoryPage = () => {
     return matchesSearch && matchesDate;
   });
 
-  const getProductName = (productId: string) => {
-    const product = products.find((p) => p.product_id === productId);
+  const getProductName = (productId: string): string => {
+    const product = (products as Product[]).find(
+      (p) => p.product_id === productId,
+    );
     return product ? product.name : "Produit non trouvé";
   };
 
-  const getTotalQuantity = (items: any[]) => {
+  const getTotalQuantity = (items: RestockItem[]): number => {
     return items.reduce((sum, item) => sum + item.quantity, 0);
   };
 
-  const getTotalCost = (items: any[]) => {
+  const getTotalCost = (items: RestockItem[]): number => {
     return items.reduce(
       (sum, item) => sum + (item.purchase_price || 0) * item.quantity,
       0,
@@ -74,12 +97,12 @@ const RestockHistoryPage = () => {
     });
   };
 
-  const totalRestocks = restocks.length;
-  const totalQuantityRestocked = restocks.reduce(
+  const totalRestocks = (restocks as Restock[]).length;
+  const totalQuantityRestocked = (restocks as Restock[]).reduce(
     (sum, restock) => sum + getTotalQuantity(restock.items),
     0,
   );
-  const totalCostRestocked = restocks.reduce(
+  const totalCostRestocked = (restocks as Restock[]).reduce(
     (sum, restock) => sum + getTotalCost(restock.items),
     0,
   );
@@ -344,7 +367,7 @@ const RestockHistoryPage = () => {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {selectedRestock.items.map((item: any, index: number) => (
+                    {selectedRestock.items.map((item, index) => (
                       <tr key={index}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                           {getProductName(item.product_id)}

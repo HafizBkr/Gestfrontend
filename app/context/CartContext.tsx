@@ -41,6 +41,8 @@ interface CartContextType {
   getTotalPrice: () => number;
   getTotalItems: () => number;
   downloadReceipt: (receiptData: ReceiptData) => void;
+  setRefreshProducts: (refreshFn: () => void) => void;
+  refreshProducts: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -59,6 +61,9 @@ interface CartProviderProps {
 
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [refreshProductsFn, setRefreshProductsFn] = useState<
+    (() => void) | null
+  >(null);
 
   const addToCart = (product: {
     product_id: string;
@@ -122,6 +127,10 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 
   const clearCart = () => {
     setCartItems([]);
+    // Rafraîchir les produits après avoir vidé le panier (après une vente)
+    if (refreshProductsFn) {
+      refreshProductsFn();
+    }
   };
 
   const getTotalPrice = () => {
@@ -177,6 +186,16 @@ TOTAL: ${receiptData.total_amount.toFixed(0)} FCFA
     window.URL.revokeObjectURL(url);
   };
 
+  const setRefreshProducts = (refreshFn: () => void) => {
+    setRefreshProductsFn(() => refreshFn);
+  };
+
+  const refreshProducts = () => {
+    if (refreshProductsFn) {
+      refreshProductsFn();
+    }
+  };
+
   const contextValue: CartContextType = {
     cartItems,
     addToCart,
@@ -186,6 +205,8 @@ TOTAL: ${receiptData.total_amount.toFixed(0)} FCFA
     getTotalPrice,
     getTotalItems,
     downloadReceipt,
+    setRefreshProducts,
+    refreshProducts,
   };
 
   return (

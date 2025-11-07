@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import useCashierProducts from "../../app/hooks/useCashierProducts";
 import { useCart } from "../../app/context/CartContext";
 
@@ -29,14 +29,19 @@ const categories = [
 
 const ProductGrid = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const { addToCart } = useCart();
+  const { addToCart, setRefreshProducts } = useCart();
 
   // Récupérer le token du caissier
   const token =
     typeof window !== "undefined"
       ? localStorage.getItem("cashier_token")
       : null;
-  const { products, loading, error } = useCashierProducts(token);
+  const { products, loading, error, refetch } = useCashierProducts(token);
+
+  // Enregistrer la fonction refetch dans le CartContext au montage
+  useEffect(() => {
+    setRefreshProducts(refetch);
+  }, [refetch, setRefreshProducts]);
 
   const handleAddToCart = (product: Product) => {
     if (product.quantity > 0 && product.is_active) {

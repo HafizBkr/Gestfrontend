@@ -64,5 +64,10 @@ export default function useCashierProducts(token: string | null) {
     fetchProducts();
   }, [fetchProducts]);
 
-  return { products, loading, error, refetch: fetchProducts };
+  return {
+    products,
+    loading,
+    error,
+    refetch: fetchProducts,
+  };
 }
