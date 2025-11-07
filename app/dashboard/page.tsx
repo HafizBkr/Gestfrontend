@@ -6,6 +6,7 @@ import LeftSidebar from "@/components/layout/LeftSidebar";
 import RightSidebar from "@/components/layout/RightSidebar";
 import ProductGrid from "@/components/menu/ProductGrid";
 import { SidebarProvider } from "@/context/SidebarContext";
+import { CartProvider } from "../context/CartContext";
 
 const DashboardPage = () => {
   const { isAuthenticated, loading } = useCashierAuth();
@@ -14,18 +15,20 @@ const DashboardPage = () => {
   if (!isAuthenticated) return null; // La redirection est déjà gérée par le hook
 
   return (
-    <SidebarProvider>
-      <div className="flex h-screen bg-gray-100">
-        {/* Sidebar Gauche - Navigation */}
-        <LeftSidebar />
+    <CartProvider>
+      <SidebarProvider>
+        <div className="flex h-screen bg-gray-100">
+          {/* Sidebar Gauche - Navigation */}
+          <LeftSidebar />
 
-        {/* Zone Centrale - Grille de Produits */}
-        <ProductGrid />
+          {/* Zone Centrale - Grille de Produits */}
+          <ProductGrid />
 
-        {/* Sidebar Droite - Panier */}
-        <RightSidebar />
-      </div>
-    </SidebarProvider>
+          {/* Sidebar Droite - Panier */}
+          <RightSidebar />
+        </div>
+      </SidebarProvider>
+    </CartProvider>
   );
 };
 
