@@ -191,8 +191,9 @@ export class ReportGenerator {
     this.addSeparator(0.3);
 
     topProducts.slice(0, 10).forEach((product) => {
+      // product.name contient l'ID du produit, chercher le nom correspondant
       const prod = products.find((p) => p.product_id === product.name);
-      const productName = prod ? prod.name : product.name;
+      const productName = prod ? prod.name : product.name.slice(0, 15);
       const line = `${productName.padEnd(25)} ${product.quantity
         .toString()
         .padStart(8)} ${this.formatPrice(product.amount).padStart(12)}`;
@@ -300,7 +301,7 @@ export class ReportGenerator {
 
     const topProducts = Object.entries(productStats)
       .map(([id, stats]) => ({
-        name: id.slice(0, 15),
+        name: id, // Garder l'ID complet pour le mapping
         quantity: stats.quantity,
         amount: stats.amount,
       }))
@@ -339,7 +340,7 @@ export class ReportGenerator {
     };
   }
 
-  public generateReport(sales: Sale[]): void {
+  public generateReport(sales: Sale[], products: Product[] = []): void {
     // Reset position
     this.yPosition = 20;
 
@@ -349,9 +350,9 @@ export class ReportGenerator {
     // Générer le rapport
     this.addHeader();
     this.addStatistics(stats);
-    this.addTopProducts(stats.topProducts);
+    this.addTopProducts(stats.topProducts, products);
     this.addCashierStats(stats.cashierStats);
-    this.addSalesDetails(sales);
+    this.addSalesDetails(sales, products);
 
     // Pied de page
     this.yPosition = this.pageHeight - 15;
@@ -414,17 +415,7 @@ export const generateSalesReport = async (
   }
 
   // Générer le rapport avec les noms d'articles
-  generator.addHeader();
-  const stats = generator.calculateStats(sales);
-
-  generator.addStatistics(stats);
-  generator.addTopProducts(stats.topProducts, products);
-  generator.addCashierStats(stats.cashierStats);
-  generator.addSalesDetails(sales, products);
-
-  // Pied de page
-  generator["yPosition"] = generator["pageHeight"] - 15;
-  generator.addLine("--- Fin du rapport ---", 10, "center", true);
+  generator.generateReport(sales, products);
 
   switch (action) {
     case "download":
