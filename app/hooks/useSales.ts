@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { getCashierName } from "@/utils/authUtils";
 
 interface SaleItem {
   product_id: string;
@@ -140,7 +141,7 @@ export default function useSales(): UseSalesResult {
             : {
                 receipt_number: saleData.sale_id, // Utiliser le vrai sale_id comme numéro de reçu
                 date: saleData.date || new Date().toISOString(),
-                cashier_name: "Caissier",
+                cashier_name: getCashierName(),
                 items: items.map((item: SaleItem) => ({
                   name: item.product_name || `Produit ${item.product_id}`,
                   quantity: item.quantity,

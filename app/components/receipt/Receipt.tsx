@@ -59,13 +59,14 @@ const Receipt: React.FC<ReceiptProps> = ({
     doc.setFontSize(14);
     doc.text("Restaurant chez Mamoune", 3, y, { align: "left" });
     y += 7;
-    doc.setFont("courier", "normal");
-    doc.setFontSize(12);
+    doc.setFont("courier", "bold");
+    doc.setFontSize(14);
     doc.text("Tel: 92 70 81 13", 3, y);
     y += 6;
     doc.line(3, y, 77, y);
     y += 5;
 
+    doc.setFont("courier", "bold");
     doc.setFontSize(11);
     doc.text(`N° Reçu: ${receiptData.receipt_number}`, 3, y);
     y += 6;
@@ -78,7 +79,7 @@ const Receipt: React.FC<ReceiptProps> = ({
     doc.setFont("courier", "bold");
     doc.text("ARTICLES:", 3, y);
     y += 6;
-    doc.setFont("courier", "normal");
+    doc.setFont("courier", "bold");
     receiptData.items.forEach((item) => {
       doc.setFontSize(11);
       doc.text(`${item.name}`, 3, y);
@@ -99,7 +100,7 @@ const Receipt: React.FC<ReceiptProps> = ({
     doc.text(`TOTAL: ${receiptData.total_amount.toFixed(0)} FCFA`, 3, y);
     y += 10;
 
-    doc.setFont("courier", "normal");
+    doc.setFont("courier", "bold");
     doc.setFontSize(10);
     doc.text("Merci pour votre visite!", 3, y);
     y += 6;
@@ -128,13 +129,14 @@ const Receipt: React.FC<ReceiptProps> = ({
     doc.setFontSize(14);
     doc.text("Restaurant chez Mamoune", 3, y, { align: "left" });
     y += 7;
-    doc.setFont("courier", "normal");
-    doc.setFontSize(12);
+    doc.setFont("courier", "bold");
+    doc.setFontSize(14);
     doc.text("Tel: 92 70 81 13", 3, y);
     y += 6;
     doc.line(3, y, 77, y);
     y += 5;
 
+    doc.setFont("courier", "bold");
     doc.setFontSize(11);
     doc.text(`N° Reçu: ${receiptData.receipt_number}`, 3, y);
     y += 6;
@@ -147,7 +149,7 @@ const Receipt: React.FC<ReceiptProps> = ({
     doc.setFont("courier", "bold");
     doc.text("ARTICLES:", 3, y);
     y += 6;
-    doc.setFont("courier", "normal");
+    doc.setFont("courier", "bold");
     receiptData.items.forEach((item) => {
       doc.setFontSize(11);
       doc.text(`${item.name}`, 3, y);
@@ -168,7 +170,7 @@ const Receipt: React.FC<ReceiptProps> = ({
     doc.text(`TOTAL: ${receiptData.total_amount.toFixed(0)} FCFA`, 3, y);
     y += 10;
 
-    doc.setFont("courier", "normal");
+    doc.setFont("courier", "bold");
     doc.setFontSize(10);
     doc.text("Merci pour votre visite!", 3, y);
     y += 6;

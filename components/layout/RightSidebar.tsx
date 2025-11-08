@@ -1,15 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSidebar } from "@/context/SidebarContext";
 import { useCart } from "../../app/context/CartContext";
 import useSales, { ReceiptData } from "../../app/hooks/useSales";
 import { generateSaleReceipt } from "@/utils/receiptGenerator";
+import { getCashierName } from "@/utils/authUtils";
 import {
   XMarkIcon,
   PrinterIcon,
   ArrowDownTrayIcon,
   EyeIcon,
+  UserIcon,
 } from "@heroicons/react/24/outline";
 
 const RightSidebar = () => {
@@ -50,7 +52,7 @@ const RightSidebar = () => {
       // Adapter les données au format attendu par le générateur de reçus
       const saleData = {
         sale_id: result.sale_id,
-        username: result.receipt_data?.cashier_name || "Caissier",
+        username: result.receipt_data?.cashier_name || getCashierName(),
         date: result.receipt_data?.date || new Date().toISOString(),
         total_amount: result.receipt_data?.total_amount || result.total_amount,
         receipt_number: result.sale_id, // Utiliser le vrai sale_id de l'API comme numéro de reçu

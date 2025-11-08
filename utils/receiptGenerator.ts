@@ -139,13 +139,13 @@ export class ReceiptGenerator {
     // Store name with larger font
     this.pdf.setFont("courier", "bold");
     this.addLine(this.config.storeName, 14, "center");
-    this.pdf.setFont("courier", "normal");
-    this.addLine(`Tel: ${this.config.storePhone}`, 12, "center");
+    this.pdf.setFont("courier", "bold");
+    this.addLine(`Tel: ${this.config.storePhone}`, 14, "center");
     this.addSeparator();
   }
 
   private addSaleInfo(sale: Sale & { receipt_number?: string }) {
-    this.pdf.setFont("courier", "normal");
+    this.pdf.setFont("courier", "bold");
     const receiptNum = sale.sale_id;
     this.addLine(`N° Reçu: ${receiptNum}`, 11);
 
@@ -161,7 +161,7 @@ export class ReceiptGenerator {
   private addItems(items: SaleItem[]) {
     this.pdf.setFont("courier", "bold");
     this.addLine("ARTICLES:", 12);
-    this.pdf.setFont("courier", "normal");
+    this.pdf.setFont("courier", "bold");
 
     items.forEach((item, index) => {
       const quantity = item.quantity;
@@ -184,7 +184,7 @@ export class ReceiptGenerator {
     // Total (sans TVA)
     this.pdf.setFont("courier", "bold");
     this.addLine(`TOTAL: ${this.formatPrice(Number(sale.total_amount))}`, 13);
-    this.pdf.setFont("courier", "normal");
+    this.pdf.setFont("courier", "bold");
 
     this.addSeparator();
   }
@@ -193,7 +193,7 @@ export class ReceiptGenerator {
     this.addSpace(3);
 
     // Thank you message
-    this.pdf.setFont("courier", "normal");
+    this.pdf.setFont("courier", "bold");
     this.addLine("Merci pour votre visite!", 10, "center");
     this.addLine("Conservez votre reçu", 10, "center");
   }
