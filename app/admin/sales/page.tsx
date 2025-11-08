@@ -22,11 +22,19 @@ const SalesPage = () => {
   const { sales, loading, error, getAllSales, calculateSalesStats } =
     useSales();
 
+  // State pour la liste des produits (id -> nom)
+  const [products, setProducts] = useState<
+    { product_id: string; name: string }[]
+  >([]);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [dateFilter, setDateFilter] = useState("all");
   const [cashierFilter, setCashierFilter] = useState("all");
   const [customStartDate, setCustomStartDate] = useState("");
   const [customEndDate, setCustomEndDate] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<
+    "all" | "Boissons" | "Nourritures"
+  >("all");
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showPrintModal, setShowPrintModal] = useState(false);
@@ -47,6 +55,60 @@ const SalesPage = () => {
   useEffect(() => {
     getAllSales();
   }, [getAllSales]);
+
+  // Charger la liste des produits au montage
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const token =
+          typeof window !== "undefined"
+            ? localStorage.getItem("admin_token")
+            : null;
+        const baseUrl =
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:7000";
+        const response = await fetch(`${baseUrl}/admin/products`, {
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` }),
+          },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setProducts(data.products || []);
+        }
+      } catch (e) {
+        // ignore
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  // Charger la liste des produits au montage
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const token =
+          typeof window !== "undefined"
+            ? localStorage.getItem("admin_token")
+            : null;
+        const baseUrl =
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:7000";
+        const response = await fetch(`${baseUrl}/admin/products`, {
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` }),
+          },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setProducts(data.products || []);
+        }
+      } catch (e) {
+        // ignore
+      }
+    };
+    fetchProducts();
+  }, []);
 
   // Mettre à jour les ventes filtrées et les statistiques
   useEffect(() => {
@@ -116,6 +178,13 @@ const SalesPage = () => {
       }
     }
 
+    // Filtrer par catégorie réelle (Boissons, Nourritures, toutes)
+    if (selectedCategory !== "all") {
+      filtered = filtered.filter((sale) =>
+        sale.items.some((item) => item.category_name === selectedCategory),
+      );
+    }
+
     setFilteredSales(filtered);
     setSalesStats(calculateSalesStats(filtered));
   }, [
@@ -125,6 +194,7 @@ const SalesPage = () => {
     cashierFilter,
     customStartDate,
     customEndDate,
+    selectedCategory,
     calculateSalesStats,
   ]);
 
@@ -222,6 +292,9 @@ const SalesPage = () => {
         filterType = "Toutes les ventes";
     }
 
+    if (selectedCategory !== "all") {
+      filterType += ` - Catégorie: ${selectedCategory}`;
+    }
     if (cashierFilter !== "all") {
       filterType += ` - Caissier: ${cashierFilter}`;
     }
@@ -448,7 +521,7 @@ const SalesPage = () => {
 
         {/* Filtres */}
         <div className="bg-white rounded-lg shadow-sm border p-4 mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="relative">
               <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <input
@@ -484,6 +557,21 @@ const SalesPage = () => {
                   {cashier}
                 </option>
               ))}
+            </select>
+
+            {/* Filtre catégorie */}
+            <select
+              value={selectedCategory}
+              onChange={(e) =>
+                setSelectedCategory(
+                  e.target.value as "all" | "Boissons" | "Nourritures",
+                )
+              }
+              className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
+            >
+              <option value="all">Toutes les catégories</option>
+              <option value="Boissons">Boissons</option>
+              <option value="Nourritures">Nourritures</option>
             </select>
 
             {selectedSales.length > 0 && (
@@ -673,7 +761,17 @@ const SalesPage = () => {
                       {selectedSale.items.map((item) => (
                         <tr key={item.sale_item_id}>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {item.product_id.slice(0, 8)}...
+                            {
+                              // Affiche le nom du produit si trouvé, sinon l'ID
+                              (() => {
+                                const prod = products.find(
+                                  (p) => p.product_id === item.product_id,
+                                );
+                                return prod
+                                  ? prod.name
+                                  : item.product_id.slice(0, 8) + "...";
+                              })()
+                            }
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             {item.quantity}
