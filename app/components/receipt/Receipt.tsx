@@ -52,47 +52,57 @@ const Receipt: React.FC<ReceiptProps> = ({
     });
 
     doc.setFont("courier", "normal");
-    doc.setFontSize(8);
+    doc.setFontSize(12);
 
     let y = 10;
     doc.setFont("courier", "bold");
+    doc.setFontSize(14);
     doc.text("Restaurant chez Mamoune", 3, y, { align: "left" });
-    y += 5;
+    y += 7;
     doc.setFont("courier", "normal");
+    doc.setFontSize(12);
     doc.text("Tel: 92 70 81 13", 3, y);
-    y += 5;
+    y += 6;
     doc.line(3, y, 77, y);
     y += 5;
 
+    doc.setFontSize(11);
     doc.text(`N° Reçu: ${receiptData.receipt_number}`, 3, y);
-    y += 5;
+    y += 6;
     doc.text(`Date: ${formatDate(receiptData.date)}`, 3, y);
-    y += 5;
+    y += 6;
     doc.text(`Caissier: ${receiptData.cashier_name}`, 3, y);
     y += 8;
 
+    doc.setFontSize(12);
+    doc.setFont("courier", "bold");
     doc.text("ARTICLES:", 3, y);
-    y += 5;
+    y += 6;
+    doc.setFont("courier", "normal");
     receiptData.items.forEach((item) => {
+      doc.setFontSize(11);
       doc.text(`${item.name}`, 3, y);
-      y += 4;
+      y += 5;
+      doc.setFontSize(10);
       doc.text(
         `${item.quantity} x ${item.unit_price.toFixed(0)} = ${item.total_price.toFixed(0)} FCFA`,
         3,
         y,
       );
-      y += 5;
+      y += 6;
     });
 
     doc.line(3, y, 52, y);
-    y += 5;
+    y += 6;
     doc.setFont("courier", "bold");
+    doc.setFontSize(13);
     doc.text(`TOTAL: ${receiptData.total_amount.toFixed(0)} FCFA`, 3, y);
-    y += 8;
+    y += 10;
 
     doc.setFont("courier", "normal");
+    doc.setFontSize(10);
     doc.text("Merci pour votre visite!", 3, y);
-    y += 5;
+    y += 6;
     doc.text("Conservez votre reçu", 3, y);
 
     // Ouvrir le PDF pour impression
@@ -111,47 +121,57 @@ const Receipt: React.FC<ReceiptProps> = ({
     });
 
     doc.setFont("courier", "normal");
-    doc.setFontSize(8);
+    doc.setFontSize(12);
 
     let y = 10;
     doc.setFont("courier", "bold");
+    doc.setFontSize(14);
     doc.text("Restaurant chez Mamoune", 3, y, { align: "left" });
-    y += 5;
+    y += 7;
     doc.setFont("courier", "normal");
+    doc.setFontSize(12);
     doc.text("Tel: 92 70 81 13", 3, y);
-    y += 5;
+    y += 6;
     doc.line(3, y, 77, y);
     y += 5;
 
+    doc.setFontSize(11);
     doc.text(`N° Reçu: ${receiptData.receipt_number}`, 3, y);
-    y += 5;
+    y += 6;
     doc.text(`Date: ${formatDate(receiptData.date)}`, 3, y);
-    y += 5;
+    y += 6;
     doc.text(`Caissier: ${receiptData.cashier_name}`, 3, y);
     y += 8;
 
+    doc.setFontSize(12);
+    doc.setFont("courier", "bold");
     doc.text("ARTICLES:", 3, y);
-    y += 5;
+    y += 6;
+    doc.setFont("courier", "normal");
     receiptData.items.forEach((item) => {
+      doc.setFontSize(11);
       doc.text(`${item.name}`, 3, y);
-      y += 4;
+      y += 5;
+      doc.setFontSize(10);
       doc.text(
         `${item.quantity} x ${item.unit_price.toFixed(0)} = ${item.total_price.toFixed(0)} FCFA`,
         3,
         y,
       );
-      y += 5;
+      y += 6;
     });
 
     doc.line(3, y, 52, y);
-    y += 5;
+    y += 6;
     doc.setFont("courier", "bold");
+    doc.setFontSize(13);
     doc.text(`TOTAL: ${receiptData.total_amount.toFixed(0)} FCFA`, 3, y);
-    y += 8;
+    y += 10;
 
     doc.setFont("courier", "normal");
+    doc.setFontSize(10);
     doc.text("Merci pour votre visite!", 3, y);
-    y += 5;
+    y += 6;
     doc.text("Conservez votre reçu", 3, y);
 
     doc.save(`recu_${receiptData.receipt_number}.pdf`);
@@ -183,7 +203,7 @@ const Receipt: React.FC<ReceiptProps> = ({
             margin: 0 !important;
             padding: 3mm !important;
             font-family: "Courier New", Courier, monospace !important;
-            font-size: 10px !important;
+            font-size: 14px !important;
             line-height: 1.2 !important;
           }
           html,

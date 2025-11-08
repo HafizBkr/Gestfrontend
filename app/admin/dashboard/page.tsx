@@ -242,46 +242,50 @@ const AdminDashboard = () => {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {recentActivities.slice(0, 8).map((activity) => (
-                    <div
-                      key={activity.id}
-                      className="flex items-center justify-between py-3 border-b last:border-b-0"
-                    >
-                      <div className="flex items-center space-x-3">
-                        <div
-                          className={`w-2 h-2 rounded-full ${
-                            activity.type === "sale"
-                              ? "bg-green-500"
-                              : activity.type === "purchase"
-                                ? "bg-orange-500"
-                                : activity.type === "restock"
-                                  ? "bg-blue-500"
-                                  : "bg-purple-500"
-                          }`}
-                        />
-                        <div>
-                          <p className="text-sm font-medium text-gray-900">
-                            {activity.description}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            {activity.time}
-                          </p>
+                  {recentActivities
+                    .filter((activity) => activity.type === "sale")
+                    .sort((a, b) => new Date(b.date) - new Date(a.date))
+                    .slice(0, 3)
+                    .map((activity) => (
+                      <div
+                        key={activity.id}
+                        className="flex items-center justify-between py-3 border-b last:border-b-0"
+                      >
+                        <div className="flex items-center space-x-3">
+                          <div
+                            className={`w-2 h-2 rounded-full ${
+                              activity.type === "sale"
+                                ? "bg-green-500"
+                                : activity.type === "purchase"
+                                  ? "bg-orange-500"
+                                  : activity.type === "restock"
+                                    ? "bg-blue-500"
+                                    : "bg-purple-500"
+                            }`}
+                          />
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">
+                              {activity.description}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {activity.time}
+                            </p>
+                          </div>
                         </div>
+                        {activity.amount && (
+                          <span
+                            className={`text-sm font-medium ${
+                              activity.amount > 0
+                                ? "text-green-600"
+                                : "text-red-600"
+                            }`}
+                          >
+                            {activity.amount > 0 ? "+" : ""}
+                            {activity.amount.toFixed(0)} FCFA
+                          </span>
+                        )}
                       </div>
-                      {activity.amount && (
-                        <span
-                          className={`text-sm font-medium ${
-                            activity.amount > 0
-                              ? "text-green-600"
-                              : "text-red-600"
-                          }`}
-                        >
-                          {activity.amount > 0 ? "+" : ""}
-                          {activity.amount.toFixed(0)} FCFA
-                        </span>
-                      )}
-                    </div>
-                  ))}
+                    ))}
                 </div>
               )}
             </div>

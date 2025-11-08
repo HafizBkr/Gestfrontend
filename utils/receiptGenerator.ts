@@ -91,7 +91,7 @@ export class ReceiptGenerator {
 
   private addLine(
     text: string,
-    fontSize: number = 8,
+    fontSize: number = 12,
     align: "left" | "center" | "right" = "left",
   ) {
     this.pdf.setFontSize(fontSize);
@@ -138,29 +138,29 @@ export class ReceiptGenerator {
   private addHeader() {
     // Store name with larger font
     this.pdf.setFont("courier", "bold");
-    this.addLine(this.config.storeName, 10, "center");
+    this.addLine(this.config.storeName, 14, "center");
     this.pdf.setFont("courier", "normal");
-    this.addLine(`Tel: ${this.config.storePhone}`, 8, "center");
+    this.addLine(`Tel: ${this.config.storePhone}`, 12, "center");
     this.addSeparator();
   }
 
   private addSaleInfo(sale: Sale & { receipt_number?: string }) {
     this.pdf.setFont("courier", "normal");
     const receiptNum = sale.sale_id;
-    this.addLine(`N° Reçu: ${receiptNum}`, 8);
+    this.addLine(`N° Reçu: ${receiptNum}`, 11);
 
     // Date and time
-    this.addLine(`Date: ${this.formatDate(sale.date)}`, 8);
+    this.addLine(`Date: ${this.formatDate(sale.date)}`, 11);
 
     // Cashier
-    this.addLine(`Caissier: ${sale.username}`, 8);
+    this.addLine(`Caissier: ${sale.username}`, 11);
 
     this.addSeparator();
   }
 
   private addItems(items: SaleItem[]) {
     this.pdf.setFont("courier", "bold");
-    this.addLine("ARTICLES:", 9);
+    this.addLine("ARTICLES:", 12);
     this.pdf.setFont("courier", "normal");
 
     items.forEach((item, index) => {
@@ -169,10 +169,10 @@ export class ReceiptGenerator {
       const totalPrice = Number(item.total_price);
 
       // Product line avec nom du produit
-      this.addLine(`${this.getProductName(item.product_id)}`, 8);
+      this.addLine(`${this.getProductName(item.product_id)}`, 11);
       this.addLine(
         `${quantity} x ${this.formatPrice(unitPrice)} = ${this.formatPrice(totalPrice)}`,
-        8,
+        10,
       );
       this.addSpace(2);
     });
@@ -183,7 +183,7 @@ export class ReceiptGenerator {
   private addTotals(sale: Sale) {
     // Total (sans TVA)
     this.pdf.setFont("courier", "bold");
-    this.addLine(`TOTAL: ${this.formatPrice(Number(sale.total_amount))}`, 10);
+    this.addLine(`TOTAL: ${this.formatPrice(Number(sale.total_amount))}`, 13);
     this.pdf.setFont("courier", "normal");
 
     this.addSeparator();
@@ -194,8 +194,8 @@ export class ReceiptGenerator {
 
     // Thank you message
     this.pdf.setFont("courier", "normal");
-    this.addLine("Merci pour votre visite!", 8, "center");
-    this.addLine("Conservez votre reçu", 8, "center");
+    this.addLine("Merci pour votre visite!", 10, "center");
+    this.addLine("Conservez votre reçu", 10, "center");
   }
 
   public async generateReceipt(sale: Sale): Promise<void> {
