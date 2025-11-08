@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { authService } from "../../utils/authService";
 
 interface Admin {
   admin_id: string;
@@ -52,6 +53,9 @@ export default function useAdminLogin(): UseAdminLoginResult {
           localStorage.setItem("admin_token", data.token);
           localStorage.setItem("admin_data", JSON.stringify(data.admin));
         }
+
+        // Forcer une vérification immédiate de l'état d'authentification
+        authService.checkNow();
       } else {
         setError(data.message || "Erreur de connexion");
       }

@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { useSidebar } from "@/context/SidebarContext";
+import { authService } from "../../utils/authService";
 
 const menuItems = [
   { icon: "dashboard-img", label: "Dashboard", path: "/dashboard" },
@@ -17,11 +18,7 @@ const LeftSidebar = () => {
 
   // Fonction de déconnexion
   const handleLogout = () => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("admin_token");
-      localStorage.removeItem("admin_data");
-    }
-    router.replace("/admin-login-xyz");
+    authService.logout("cashier");
   };
 
   const { isLeftSidebarOpen, toggleLeftSidebar } = useSidebar();

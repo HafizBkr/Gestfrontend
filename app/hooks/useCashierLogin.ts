@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { authService } from "../../utils/authService";
 
 interface Cashier {
   cashier_id: string;
@@ -97,6 +98,9 @@ export default function useCashierLogin(): UseCashierLoginResult {
           localStorage.setItem("cashier_token", data.token);
           localStorage.setItem("cashier_data", JSON.stringify(data.cashier));
         }
+
+        // Forcer une vérification immédiate de l'état d'authentification
+        authService.checkNow();
         setLoading(false);
         return true;
       } else {
@@ -116,11 +120,8 @@ export default function useCashierLogin(): UseCashierLoginResult {
     setToken(null);
     setError(null);
 
-    // Supprimer les données du localStorage
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("cashier_token");
-      localStorage.removeItem("cashier_data");
-    }
+    // Utiliser le service d'authentification pour la déconnexion
+    authService.logout("cashier");
   };
 
   return { login, loading, error, cashier, token, logout };
