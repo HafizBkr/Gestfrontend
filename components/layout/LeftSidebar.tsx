@@ -9,7 +9,6 @@ import { authService } from "../../utils/authService";
 const menuItems = [
   { icon: "dashboard-img", label: "Dashboard", path: "/dashboard" },
   { icon: "history-svg", label: "Historique", path: "/dashboard/history" },
-  { icon: "report-svg", label: "Sales Reports", path: "/dashboard/sales" },
 ];
 
 const LeftSidebar = () => {

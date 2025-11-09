@@ -6,6 +6,7 @@ import { SidebarProvider } from "@/context/SidebarContext";
 import useCashierSales from "@/app/hooks/useCashierSales";
 import type { Sale, SaleItem } from "@/app/hooks/useCashierSales";
 import { generateSaleReceipt } from "@/utils/receiptGenerator";
+import useCashierProducts from "@/app/hooks/useCashierProducts";
 
 const HistoryPage = () => {
   const { sales, loading, error } = useCashierSales();
@@ -13,6 +14,19 @@ const HistoryPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
+
+  // Récupérer le token du localStorage pour les produits
+  const token =
+    typeof window !== "undefined"
+      ? localStorage.getItem("cashier_token")
+      : null;
+  const { products } = useCashierProducts(token);
+
+  // Helper pour obtenir le nom du produit à partir de l'ID
+  const getProductName = (product_id: string) => {
+    const product = products.find((p) => p.product_id === product_id);
+    return product ? product.name : product_id;
+  };
 
   // Helper pour le statut (toujours "completed" pour les ventes du caissier)
   const getStatusColor = (status: string) => {
@@ -221,6 +235,8 @@ const HistoryPage = () => {
                             className="flex justify-between items-center text-sm"
                           >
                             <span className="text-gray-900">
+                              {getProductName(item.product_id)}
+                              <br />
                               {item.quantity} ×{" "}
                               {parseFloat(item.unit_price).toFixed(0)} FCFA
                             </span>
@@ -319,7 +335,7 @@ const HistoryPage = () => {
                     {selectedSale.items.map((item) => (
                       <tr key={item.sale_item_id}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          {item.product_id.slice(0, 8)}
+                          {getProductName(item.product_id)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                           {item.quantity}
