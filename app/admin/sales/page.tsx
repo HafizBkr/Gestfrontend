@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import useSales, { Sale, SaleItem } from "@/hook/useSales";
+import useCategories from "../../hooks/useCategories";
 
 // Étend SaleItem pour inclure category_name (optionnel)
 type SaleItemWithCategoryName = SaleItem & { category_name?: string };
@@ -30,14 +31,18 @@ const SalesPage = () => {
     { product_id: string; name: string }[]
   >([]);
 
+  // Hook pour les catégories dynamiques
+  const { categories, fetchCategories } = useCategories();
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [dateFilter, setDateFilter] = useState("all");
   const [cashierFilter, setCashierFilter] = useState("all");
   const [customStartDate, setCustomStartDate] = useState("");
   const [customEndDate, setCustomEndDate] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<
-    "all" | "Boissons" | "Nourritures"
-  >("all");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedSale, setSelectedSale] = useState<Sale | null>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showPrintModal, setShowPrintModal] = useState(false);
@@ -568,16 +573,15 @@ const SalesPage = () => {
             {/* Filtre catégorie */}
             <select
               value={selectedCategory}
-              onChange={(e) =>
-                setSelectedCategory(
-                  e.target.value as "all" | "Boissons" | "Nourritures",
-                )
-              }
+              onChange={(e) => setSelectedCategory(e.target.value)}
               className="border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
             >
               <option value="all">Toutes les catégories</option>
-              <option value="Boissons">Boissons</option>
-              <option value="Nourritures">Nourritures</option>
+              {categories.map((cat) => (
+                <option key={cat.category_id} value={cat.name}>
+                  {cat.name}
+                </option>
+              ))}
             </select>
 
             {selectedSales.length > 0 && (
