@@ -11,6 +11,8 @@ import {
   PlayIcon,
   CurrencyDollarIcon,
   ClockIcon,
+  EyeIcon,
+  EyeSlashIcon,
 } from "@heroicons/react/24/outline";
 
 const GamesPage = () => {
@@ -21,10 +23,11 @@ const GamesPage = () => {
     getGames,
     createGame,
     updateGame,
-    deleteGame,
     addGamePricing,
     updateGamePricing,
     deleteGamePricing,
+    disableGame,
+    enableGame,
   } = useGames();
 
   // Affichage de l'erreur en haut de la page
@@ -192,22 +195,32 @@ const GamesPage = () => {
     setShowPricingModal(true);
   };
 
-  const handleDeleteGame = async (gameId: string) => {
-    if (confirm("Êtes-vous sûr de vouloir supprimer ce jeu ?")) {
-      try {
-        await deleteGame(gameId);
-      } catch (error) {
-        console.error("Erreur lors de la suppression:", error);
-      }
-    }
-  };
-
   const handleDeletePricing = async (pricingId: string) => {
     if (confirm("Êtes-vous sûr de vouloir supprimer cette modalité ?")) {
       try {
         await deleteGamePricing(pricingId);
       } catch (error) {
         console.error("Erreur lors de la suppression:", error);
+      }
+    }
+  };
+
+  const handleDisableGame = async (gameId: string) => {
+    if (confirm("Êtes-vous sûr de vouloir désactiver ce jeu ?")) {
+      try {
+        await disableGame(gameId);
+      } catch (error) {
+        console.error("Erreur lors de la désactivation:", error);
+      }
+    }
+  };
+
+  const handleEnableGame = async (gameId: string) => {
+    if (confirm("Êtes-vous sûr de vouloir réactiver ce jeu ?")) {
+      try {
+        await enableGame(gameId);
+      } catch (error) {
+        console.error("Erreur lors de la réactivation:", error);
       }
     }
   };
@@ -269,6 +282,7 @@ const GamesPage = () => {
 
   const totalGames = games.length;
   const activeGames = games.filter((g) => g.is_active).length;
+  const inactiveGames = games.filter((g) => !g.is_active).length;
   const gamesWithPricing = games.filter(
     (g) => g.pricing_options && g.pricing_options.length > 0,
   ).length;
@@ -512,16 +526,29 @@ const GamesPage = () => {
                               >
                                 <PencilIcon className="h-5 w-5" />
                               </button>
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleDeleteGame(game.game_id);
-                                }}
-                                className="text-red-600 hover:text-red-900"
-                                title="Supprimer"
-                              >
-                                <TrashIcon className="h-5 w-5" />
-                              </button>
+                              {game.is_active ? (
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDisableGame(game.game_id);
+                                  }}
+                                  className="text-orange-600 hover:text-orange-900"
+                                  title="Désactiver"
+                                >
+                                  <EyeSlashIcon className="h-5 w-5" />
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleEnableGame(game.game_id);
+                                  }}
+                                  className="text-green-600 hover:text-green-900"
+                                  title="Réactiver"
+                                >
+                                  <EyeIcon className="h-5 w-5" />
+                                </button>
+                              )}
                             </div>
                           </td>
                         </tr>

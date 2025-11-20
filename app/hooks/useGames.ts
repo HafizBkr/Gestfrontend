@@ -48,6 +48,8 @@ interface UseGamesResult {
     data: Partial<GamePricing>,
   ) => Promise<void>;
   deleteGamePricing: (pricingId: string) => Promise<void>;
+  disableGame: (gameId: string) => Promise<void>;
+  enableGame: (gameId: string) => Promise<void>;
   // Ajout pour debug UI
   debugError?: string | null;
 }
@@ -289,6 +291,54 @@ const useGames = (): UseGamesResult => {
     }
   };
 
+  // 11. Désactiver un jeu
+  // PATCH /games/admin/games/:gameId/disable
+  const disableGame = async (gameId: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(`${API_PREFIX}/${gameId}/disable`, {
+        method: "PATCH",
+        headers: getAuthHeaders(),
+      });
+      if (!res.ok) throw new Error(`Erreur ${res.status}: ${res.statusText}`);
+      await getGames(); // Refresh list
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Erreur lors de la désactivation du jeu",
+      );
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 12. Réactiver un jeu
+  // PATCH /games/admin/games/:gameId/enable
+  const enableGame = async (gameId: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(`${API_PREFIX}/${gameId}/enable`, {
+        method: "PATCH",
+        headers: getAuthHeaders(),
+      });
+      if (!res.ok) throw new Error(`Erreur ${res.status}: ${res.statusText}`);
+      await getGames(); // Refresh list
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Erreur lors de la réactivation du jeu",
+      );
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     games,
     game,
@@ -302,6 +352,8 @@ const useGames = (): UseGamesResult => {
     addGamePricing,
     updateGamePricing,
     deleteGamePricing,
+    disableGame,
+    enableGame,
     debugError: error, // Pour affichage direct dans la page si besoin
   };
 };
