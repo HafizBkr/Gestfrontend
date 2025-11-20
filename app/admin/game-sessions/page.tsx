@@ -5,6 +5,10 @@ import AdminLayout from "../../../components/admin/AdminLayout";
 import useAdminGameSessions from "../../hooks/useAdminGameSessions";
 import { generateGameSessionReceipt } from "../../../utils/gameSessionReceiptGenerator";
 import {
+  generateGameSessionReport,
+  GameSessionReportItem,
+} from "../../../utils/gameSessionReportGenerator";
+import {
   PlayIcon,
   ClockIcon,
   PrinterIcon,
@@ -104,7 +108,7 @@ const AdminGameSessionsPage = () => {
 
   // Listes uniques pour les filtres
   const uniqueCashiers = Array.from(
-    new Set(sessions.map((s) => s.cashier_name).filter(Boolean)),
+    new Set(sessions.map((s) => s.cashier_username).filter(Boolean)),
   );
   const uniqueGames = Array.from(
     new Set(sessions.map((s) => s.game_name).filter(Boolean)),
@@ -134,7 +138,7 @@ const AdminGameSessionsPage = () => {
           s.game_name?.toLowerCase().includes(lower) ||
           s.pricing_description?.toLowerCase().includes(lower) ||
           s.mode?.toLowerCase().includes(lower) ||
-          s.cashier_name?.toLowerCase().includes(lower) ||
+          s.cashier_username?.toLowerCase().includes(lower) ||
           s.session_id.toLowerCase().includes(lower),
       );
     }
@@ -175,7 +179,7 @@ const AdminGameSessionsPage = () => {
 
     // Filtre par caissier
     if (cashierFilter !== "all") {
-      filtered = filtered.filter((s) => s.cashier_name === cashierFilter);
+      filtered = filtered.filter((s) => s.cashier_username === cashierFilter);
     }
 
     // Filtre par jeu
@@ -217,7 +221,7 @@ const AdminGameSessionsPage = () => {
 
     // Statistiques par caissier
     filtered.forEach((session) => {
-      const cashier = session.cashier_name || "Inconnu";
+      const cashier = session.cashier_username || "Inconnu";
       stats.sessionsByCashier[cashier] =
         (stats.sessionsByCashier[cashier] || 0) + 1;
     });
@@ -268,6 +272,41 @@ const AdminGameSessionsPage = () => {
         ? prev.filter((id) => id !== sessionId)
         : [...prev, sessionId],
     );
+  };
+
+  const handleGenerateReport = async () => {
+    try {
+      const reportSessions: GameSessionReportItem[] = filteredSessions.map(
+        (session) => ({
+          session_id: session.session_id,
+          game_id: session.game_id,
+          game_name: session.game_name || "Inconnu",
+          pricing_id: session.pricing_id,
+          pricing_description: session.pricing_description || "Non spécifiée",
+          mode: session.mode,
+          player_count: session.player_count,
+          total_price: session.total_price,
+          cashier_username: session.cashier_username || "Inconnu",
+          created_at: session.created_at,
+          notes: session.notes,
+          status: session.status,
+        }),
+      );
+
+      const reportConfig = {
+        dateRange: getDateRangeText(),
+        filterType:
+          `${searchTerm ? `Recherche: "${searchTerm}" | ` : ""}${
+            gameFilter !== "all" ? `Jeu: ${gameFilter} | ` : ""
+          }${cashierFilter !== "all" ? `Caissier: ${cashierFilter} | ` : ""}${
+            statusFilter !== "all" ? `Statut: ${statusFilter}` : ""
+          }`.replace(/\|\s*$/, "") || "Toutes les sessions",
+      };
+
+      await generateGameSessionReport(reportSessions, reportConfig, "preview");
+    } catch (error) {
+      console.error("Erreur lors de la génération du rapport:", error);
+    }
   };
 
   const getDateRangeText = () => {
@@ -347,12 +386,12 @@ const AdminGameSessionsPage = () => {
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center space-x-4">
             <button
-              onClick={() => window.print()}
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center space-x-2"
+              onClick={handleGenerateReport}
+              className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center space-x-2"
               disabled={filteredSessions.length === 0}
             >
-              <PrinterIcon className="w-5 h-5" />
-              <span>Imprimer</span>
+              <DocumentChartBarIcon className="w-5 h-5" />
+              <span>Rapport PDF</span>
             </button>
           </div>
 

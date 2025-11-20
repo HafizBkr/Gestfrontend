@@ -16,7 +16,7 @@ export interface GameSession {
   // Relations
   game_name?: string;
   pricing_description?: string;
-  cashier_name?: string;
+  cashier_username?: string;
 }
 
 interface GameSessionsResponse {
