@@ -40,11 +40,14 @@ export default function useCashierProducts(token: string | null) {
     setError(null);
 
     try {
-      const response = await fetch(`${BACKEND_URL}/cashiers/products`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `${BACKEND_URL}/cashiers/products?onlyActive=false`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
       if (!response.ok) {
         throw new Error("Erreur lors de la récupération des produits");

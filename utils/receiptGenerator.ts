@@ -53,7 +53,7 @@ export class ReceiptGenerator {
     this.pdf = new jsPDF({
       orientation: "portrait",
       unit: "mm",
-      format: [this.pageWidth, 200], // Start with estimated height
+      format: [this.pageWidth, 200],
     });
   }
 

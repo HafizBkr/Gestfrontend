@@ -9,6 +9,12 @@ import { authService } from "../../utils/authService";
 const menuItems = [
   { icon: "dashboard-img", label: "Dashboard", path: "/dashboard" },
   { icon: "history-svg", label: "Historique", path: "/dashboard/history" },
+  { icon: "games-svg", label: "Jeux Vidéos", path: "/cashier/games" },
+  {
+    icon: "history-svg",
+    label: "Hist. Sessions Jeux",
+    path: "/cashier/game-sessions",
+  },
 ];
 
 const LeftSidebar = () => {
@@ -106,6 +112,27 @@ const LeftSidebar = () => {
                     <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
                     <path d="M3 3v5h5" />
                     <path d="M12 7v5l4 2" />
+                  </svg>
+                </span>
+              ) : item.icon === "games-svg" ? (
+                <span className="text-xl flex items-center justify-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="lucide lucide-gamepad-2"
+                  >
+                    <path d="M6 11h4" />
+                    <path d="M8 9v4" />
+                    <path d="M15 12h-1" />
+                    <path d="M16 10h-1" />
+                    <path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9Z" />
                   </svg>
                 </span>
               ) : (

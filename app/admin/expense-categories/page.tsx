@@ -1,27 +1,18 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
-import useCategories from "../../hooks/useCategories";
+import useExpenseCategories, {
+  ExpenseCategory,
+} from "../../hooks/useExpenseCategories";
 import {
   PlusIcon,
   PencilIcon,
-  TrashIcon,
   MagnifyingGlassIcon,
-  FunnelIcon,
   EyeIcon,
 } from "@heroicons/react/24/outline";
 
-interface Category {
-  category_id: string;
-  name: string;
-  type: string;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
-}
-
-const CategoriesPage = () => {
+const ExpenseCategoriesPage = () => {
   const {
     categories,
     loading,
@@ -29,17 +20,15 @@ const CategoriesPage = () => {
     fetchCategories,
     addCategory,
     updateCategory,
-    enableCategory,
-    disableCategory,
-  } = useCategories();
+  } = useExpenseCategories();
 
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
   const [showModal, setShowModal] = useState(false);
-  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [editingCategory, setEditingCategory] =
+    useState<ExpenseCategory | null>(null);
   const [formData, setFormData] = useState({
     name: "",
-    type: "",
+    description: "",
   });
 
   // Charger les catégories au montage du composant
@@ -51,15 +40,12 @@ const CategoriesPage = () => {
   const filteredCategories = categories.filter((category) => {
     const matchesSearch =
       category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      category.type.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus =
-      statusFilter === "all" ||
-      (statusFilter === "active" && category.is_active) ||
-      (statusFilter === "inactive" && !category.is_active);
-
-    return matchesSearch && matchesStatus;
+      (category.description &&
+        category.description.toLowerCase().includes(searchTerm.toLowerCase()));
+    return matchesSearch;
   });
 
+  // Gestion du formulaire
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -67,7 +53,8 @@ const CategoriesPage = () => {
     const isDuplicateCategory = categories.some(
       (c) =>
         c.name.trim().toLowerCase() === formData.name.trim().toLowerCase() &&
-        (!editingCategory || c.category_id !== editingCategory.category_id),
+        (!editingCategory ||
+          c.expense_category_id !== editingCategory.expense_category_id),
     );
     if (isDuplicateCategory) {
       alert("Une catégorie avec ce nom existe déjà.");
@@ -78,19 +65,19 @@ const CategoriesPage = () => {
       if (editingCategory) {
         // Modification
         await updateCategory(
-          editingCategory.category_id,
+          editingCategory.expense_category_id,
           formData.name,
-          formData.type,
+          formData.description,
         );
       } else {
         // Ajout
-        await addCategory(formData.name, formData.type);
+        await addCategory(formData.name, formData.description);
       }
 
       // Reset du formulaire
       setFormData({
         name: "",
-        type: "",
+        description: "",
       });
       setEditingCategory(null);
       setShowModal(false);
@@ -99,24 +86,45 @@ const CategoriesPage = () => {
     }
   };
 
-  const handleEdit = (category: Category) => {
+  const handleEdit = (category: ExpenseCategory) => {
     setEditingCategory(category);
     setFormData({
       name: category.name,
-      type: category.type,
+      description: category.description || "",
     });
     setShowModal(true);
   };
 
-  const handleToggleStatus = async (category: Category) => {
-    try {
-      if (category.is_active) {
-        await disableCategory(category.category_id);
-      } else {
-        await enableCategory(category.category_id);
+  // Désactivation/activation (soft delete)
+  const handleToggleActive = async (category: ExpenseCategory) => {
+    const action = category.is_active ? "désactiver" : "activer";
+    if (
+      window.confirm(
+        `Voulez-vous vraiment ${action} cette catégorie de dépense ?`,
+      )
+    ) {
+      try {
+        const token =
+          typeof window !== "undefined"
+            ? localStorage.getItem("admin_token")
+            : null;
+        const baseUrl =
+          process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:7000";
+        await fetch(
+          `${baseUrl}/admin/expenses/categories/${category.expense_category_id}/activation`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              ...(token && { Authorization: `Bearer ${token}` }),
+            },
+            body: JSON.stringify({ is_active: !category.is_active }),
+          },
+        );
+        await fetchCategories();
+      } catch (e) {
+        alert("Erreur lors du changement de statut.");
       }
-    } catch (err) {
-      console.error("Erreur lors du changement de statut:", err);
     }
   };
 
@@ -124,13 +132,12 @@ const CategoriesPage = () => {
     setEditingCategory(null);
     setFormData({
       name: "",
-      type: "",
+      description: "",
     });
     setShowModal(true);
   };
 
   const totalCategories = categories.length;
-  const activeCategories = categories.filter((c) => c.is_active).length;
 
   return (
     <AdminLayout>
@@ -138,10 +145,10 @@ const CategoriesPage = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">
-            Gestion des Catégories
+            Catégories de Dépenses
           </h1>
           <p className="text-gray-600 mt-2">
-            Gérez les catégories de produits de votre magasin
+            Gérez les catégories de dépenses de votre établissement
           </p>
         </div>
 
@@ -158,39 +165,7 @@ const CategoriesPage = () => {
                 </p>
               </div>
               <div className="p-3 rounded-full bg-blue-500">
-                <FunnelIcon className="w-6 h-6 text-white" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-sm border p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">
-                  Catégories Actives
-                </p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {activeCategories}
-                </p>
-              </div>
-              <div className="p-3 rounded-full bg-green-500">
                 <EyeIcon className="w-6 h-6 text-white" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-sm border p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">
-                  Types de catégories
-                </p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {new Set(categories.map((c) => c.type)).size}
-                </p>
-              </div>
-              <div className="p-3 rounded-full bg-purple-500">
-                <FunnelIcon className="w-6 h-6 text-white" />
               </div>
             </div>
           </div>
@@ -213,17 +188,6 @@ const CategoriesPage = () => {
                   className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
               </div>
-
-              {/* Status Filter */}
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="all">Tous les statuts</option>
-                <option value="active">Actif</option>
-                <option value="inactive">Inactif</option>
-              </select>
             </div>
 
             {/* Add Button */}
@@ -253,10 +217,7 @@ const CategoriesPage = () => {
                     Nom
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Type
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Statut
+                    Description
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Créée le
@@ -269,7 +230,7 @@ const CategoriesPage = () => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {loading ? (
                   <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center">
+                    <td colSpan={4} className="px-6 py-12 text-center">
                       <div className="flex justify-center">
                         <div className="w-6 h-6 border-2 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
                       </div>
@@ -281,7 +242,7 @@ const CategoriesPage = () => {
                 ) : (
                   filteredCategories.map((category) => (
                     <tr
-                      key={category.category_id}
+                      key={category.expense_category_id}
                       className="hover:bg-gray-50 transition-colors"
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -290,21 +251,11 @@ const CategoriesPage = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-600 capitalize">
-                          {category.type}
+                        <div className="text-sm text-gray-600">
+                          {category.description || (
+                            <span className="italic text-gray-400">Aucune</span>
+                          )}
                         </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <button
-                          onClick={() => handleToggleStatus(category)}
-                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full cursor-pointer hover:opacity-80 ${
-                            category.is_active
-                              ? "bg-green-100 text-green-800"
-                              : "bg-red-100 text-red-800"
-                          }`}
-                        >
-                          {category.is_active ? "Actif" : "Inactif"}
-                        </button>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                         {new Date(category.created_at).toLocaleDateString(
@@ -319,6 +270,16 @@ const CategoriesPage = () => {
                           >
                             <PencilIcon className="w-4 h-4" />
                           </button>
+                          <button
+                            onClick={() => handleToggleActive(category)}
+                            className={`p-1 rounded ${
+                              category.is_active
+                                ? "text-yellow-600 hover:text-yellow-900 hover:bg-yellow-50"
+                                : "text-green-600 hover:text-green-900 hover:bg-green-50"
+                            }`}
+                          >
+                            {category.is_active ? "Désactiver" : "Activer"}
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -328,9 +289,9 @@ const CategoriesPage = () => {
             </table>
           </div>
 
-          {filteredCategories.length === 0 && (
+          {filteredCategories.length === 0 && !loading && (
             <div className="text-center py-12">
-              <FunnelIcon className="mx-auto h-12 w-12 text-gray-400" />
+              <EyeIcon className="mx-auto h-12 w-12 text-gray-400" />
               <h3 className="mt-2 text-sm font-medium text-gray-900">
                 Aucune catégorie trouvée
               </h3>
@@ -364,29 +325,29 @@ const CategoriesPage = () => {
                         setFormData({ ...formData, name: e.target.value })
                       }
                       className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
-                      placeholder="Ex: Sodas"
+                      placeholder="Ex: Fournitures de bureau"
                     />
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Type *
+                      Description
                     </label>
-                    <select
-                      required
-                      value={formData.type}
+                    <textarea
+                      value={formData.description}
                       onChange={(e) =>
-                        setFormData({ ...formData, type: e.target.value })
+                        setFormData({
+                          ...formData,
+                          description: e.target.value,
+                        })
                       }
                       className="w-full border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-black"
-                    >
-                      <option value="">Sélectionner un type</option>
-                      <option value="boisson">Boisson</option>
-                      <option value="nourriture">Nourriture</option>
-                    </select>
+                      placeholder="Ex: Achats de papier, stylos, etc."
+                      rows={2}
+                    />
                   </div>
 
-                  <div className="flex justify-end space-x-3 pt-4">
+                  <div className="flex justify-end space-x-2">
                     <button
                       type="button"
                       onClick={() => setShowModal(false)}
@@ -396,14 +357,9 @@ const CategoriesPage = () => {
                     </button>
                     <button
                       type="submit"
-                      disabled={loading}
-                      className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50"
+                      className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
                     >
-                      {loading
-                        ? "..."
-                        : editingCategory
-                          ? "Modifier"
-                          : "Ajouter"}
+                      {editingCategory ? "Enregistrer" : "Ajouter"}
                     </button>
                   </div>
                 </form>
@@ -416,4 +372,4 @@ const CategoriesPage = () => {
   );
 };
 
-export default CategoriesPage;
+export default ExpenseCategoriesPage;

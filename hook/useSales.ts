@@ -8,6 +8,8 @@ export interface SaleItem {
   quantity: number;
   unit_price: string;
   total_price: string;
+  product_name?: string;
+  category_name?: string;
 }
 
 export interface Sale {

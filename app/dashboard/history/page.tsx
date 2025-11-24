@@ -25,7 +25,7 @@ const HistoryPage = () => {
   // Helper pour obtenir le nom du produit à partir de l'ID
   const getProductName = (product_id: string) => {
     const product = products.find((p) => p.product_id === product_id);
-    return product ? product.name : product_id;
+    return product ? product.name : `Produit désactivé (ID: ${product_id})`;
   };
 
   // Helper pour le statut (toujours "completed" pour les ventes du caissier)

@@ -13,6 +13,10 @@ import {
   FunnelIcon,
   EyeIcon,
 } from "@heroicons/react/24/outline";
+import {
+  generateProductReport,
+  ProductReportItem,
+} from "@/utils/productReportGenerator";
 
 const ProductsPage = () => {
   const {
@@ -87,6 +91,18 @@ const ProductsPage = () => {
     e.preventDefault();
 
     try {
+      // Vérification unicité produit (nom + catégorie)
+      const isDuplicateProduct = products.some(
+        (p) =>
+          p.name.trim().toLowerCase() === formData.name.trim().toLowerCase() &&
+          p.category_id === formData.category_id &&
+          (!editingProduct || p.product_id !== editingProduct.product_id),
+      );
+      if (isDuplicateProduct) {
+        alert("Un produit avec ce nom existe déjà dans cette catégorie.");
+        return;
+      }
+
       const productData = {
         name: formData.name,
         category_id: formData.category_id,
@@ -317,6 +333,38 @@ const ProductsPage = () => {
           </div>
         </div>
 
+        {/* Bouton Export PDF Produits */}
+        <div className="flex justify-end mb-4">
+          <button
+            onClick={() => {
+              // Mapping des produits actifs pour le rapport
+              const productsForReport = sortedProducts
+                .filter((p) => p.is_active)
+                .map((p) => ({
+                  product_id: p.product_id,
+                  name: p.name,
+                  category_name:
+                    categories.find((c) => c.category_id === p.category_id)
+                      ?.name || "Non définie",
+                  quantity: p.quantity,
+                  purchase_price:
+                    typeof p.purchase_price === "number"
+                      ? p.purchase_price
+                      : Number(p.purchase_price),
+                  sale_price:
+                    typeof p.sale_price === "number"
+                      ? p.sale_price
+                      : Number(p.sale_price),
+                  is_active: p.is_active,
+                }));
+              generateProductReport(productsForReport, {}, "download");
+            }}
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+          >
+            <EyeIcon className="w-4 h-4 mr-2" />
+            Exporter rapport produits
+          </button>
+        </div>
         {/* Table des produits */}
         <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
           {error && typeof error === "string" && error.length > 0 ? (
@@ -426,12 +474,6 @@ const ProductsPage = () => {
                               className="text-blue-600 hover:text-blue-900"
                             >
                               <PencilIcon className="w-4 h-4" />
-                            </button>
-                            <button
-                              onClick={() => handleDelete(product.product_id)}
-                              className="text-red-600 hover:text-red-900"
-                            >
-                              <TrashIcon className="w-4 h-4" />
                             </button>
                           </div>
                         </td>

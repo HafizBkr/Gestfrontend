@@ -63,10 +63,13 @@ const useProducts = (): UseProductsResult => {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${BACKEND_URL}/admin/products/`, {
-        method: "GET",
-        headers: getAuthHeaders(),
-      });
+      const res = await fetch(
+        `${BACKEND_URL}/admin/products/?onlyActive=false`,
+        {
+          method: "GET",
+          headers: getAuthHeaders(),
+        },
+      );
       if (!res.ok) throw new Error(`Erreur ${res.status}: ${res.statusText}`);
       const data: ProductsResponse = await res.json();
       setProducts(data.products);
