@@ -12,6 +12,7 @@ import {
   ExclamationTriangleIcon,
   ArrowUpIcon,
   ArrowDownIcon,
+  BackwardIcon,
 } from "@heroicons/react/24/outline";
 
 // Anti-flash wrapper component
@@ -389,6 +390,48 @@ const AdminDashboard = () => {
           </div>
         </div>
 
+        {/* Retro Sales Section */}
+        <div className="bg-white rounded-lg shadow-sm border">
+          <div className="p-6 border-b">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-gray-900">
+                Ventes Rétroactives
+              </h2>
+              <button
+                onClick={() => router.push("/admin/retro-sales")}
+                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              >
+                Voir tout →
+              </button>
+            </div>
+          </div>
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-600">-</div>
+                <div className="text-sm text-gray-600">Total rétroactives</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-600">-</div>
+                <div className="text-sm text-gray-600">Ce mois</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-purple-600">- FCFA</div>
+                <div className="text-sm text-gray-600">Montant total</div>
+              </div>
+            </div>
+            <div className="text-center py-4">
+              <button
+                onClick={() => router.push("/admin/retro-sales")}
+                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                <BackwardIcon className="w-4 h-4 mr-2" />
+                Gérer les ventes rétroactives
+              </button>
+            </div>
+          </div>
+        </div>
+
         {/* Quick Actions */}
         <div className="bg-white rounded-lg shadow-sm border">
           <div className="p-6 border-b">
@@ -397,7 +440,7 @@ const AdminDashboard = () => {
             </h2>
           </div>
           <div className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <button
                 onClick={() => router.push("/admin/products")}
                 className="flex flex-col items-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-colors group"
@@ -424,6 +467,15 @@ const AdminDashboard = () => {
                 <ChartBarIcon className="w-8 h-8 text-gray-400 group-hover:text-orange-500 mb-2" />
                 <span className="text-sm font-medium text-gray-700 group-hover:text-orange-700">
                   Voir Rapports
+                </span>
+              </button>
+              <button
+                onClick={() => router.push("/admin/retro-sales")}
+                className="flex flex-col items-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition-colors group"
+              >
+                <BackwardIcon className="w-8 h-8 text-gray-400 group-hover:text-green-500 mb-2" />
+                <span className="text-sm font-medium text-gray-700 group-hover:text-green-700">
+                  Ventes Rétroactives
                 </span>
               </button>
             </div>
