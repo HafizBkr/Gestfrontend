@@ -254,6 +254,7 @@ const RetroSalesPage = () => {
     if (result) {
       setShowCreateModal(false);
       resetForm();
+      await getRetroSales(); // Rafraîchit la liste après création
     }
   };
 
