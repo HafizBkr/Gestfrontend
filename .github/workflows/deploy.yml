@@ -1,4 +1,4 @@
-name: CD - Build & Deploy
+name: CI - Build & Push Docker Image
 
 on:
   push:
@@ -9,7 +9,7 @@ env:
   REGISTRY: ghcr.io
 
 jobs:
-  build-and-deploy:
+  build-and-push:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -39,22 +39,3 @@ jobs:
             ${{ env.IMAGE_NAME }}:${{ github.sha }}
           build-args: |
             NEXT_PUBLIC_BACKEND_URL=${{ secrets.NEXT_PUBLIC_BACKEND_URL }}
-
-      - name: Deploy on server
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            echo "${{ secrets.GHCR_TOKEN }}" | docker login ${{ env.REGISTRY }} -u ${{ github.repository_owner }} --password-stdin
-            docker pull ${{ env.IMAGE_NAME }}:latest
-            docker stop gestfrontend 2>/dev/null || true
-            docker rm gestfrontend 2>/dev/null || true
-            docker run -d \
-              --name gestfrontend \
-              --restart unless-stopped \
-              -p 3000:3000 \
-              ${{ env.IMAGE_NAME }}:latest
-            docker image prune -f
